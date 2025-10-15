@@ -1,0 +1,25 @@
+# GitHub Organization Audit Configuration
+#
+# This file allows you to customize what information is included in the audit.
+# All options default to true if not specified.
+
+# Include organization settings in audit
+audit_settings: true
+
+# Include team configuration in audit
+audit_teams: true
+
+# Include repository configuration in audit
+audit_repositories: true
+
+# Include permissions across the organization in audit
+audit_permissions: true
+
+# Include CODEOWNERS files in audit
+audit_codeowners: true
+
+# Include archived repositories in the audit
+include_archived: false
+
+# Include team members when auditing teams (can be slow for large orgs)
+include_team_members: false
