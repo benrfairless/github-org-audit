@@ -18,7 +18,14 @@ This tool uses [mise](https://mise.jdx.dev/) to manage the Python version and vi
 
 ### Prerequisites
 
-1. Install mise:
+- Python 3.8 or later
+- A GitHub personal access token with appropriate permissions
+
+### Option 1: Install with mise (Recommended)
+
+This project uses [mise](https://mise.jdx.dev/) for version management.
+
+1. Install mise (if not already installed):
 ```bash
 curl https://mise.run | sh
 ```
@@ -29,14 +36,32 @@ git clone https://github.com/benrfairless/github-org-audit.git
 cd github-org-audit
 ```
 
-3. Install dependencies:
+3. Install Python and dependencies:
 ```bash
 mise install
 mise exec -- pip install -r requirements.txt
+mise exec -- pip install -e .
 ```
 
-Alternatively, you can install directly with pip:
+### Option 2: Install with pip (Without mise)
+
+If you prefer not to use mise or cannot access the mise installation URL:
+
+1. Clone this repository:
 ```bash
+git clone https://github.com/benrfairless/github-org-audit.git
+cd github-org-audit
+```
+
+2. Create a virtual environment (optional but recommended):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
 pip install -e .
 ```
 
