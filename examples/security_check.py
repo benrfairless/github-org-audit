@@ -20,24 +20,28 @@ def check_security(org_name, token):
     # Get organization settings
     settings = client.get_org_settings(org_name)
     
+    # Extract only the specific settings we need to avoid overly broad logging
+    # These are organizational policy settings, not sensitive user data
+    two_factor_enabled = settings.get("two_factor_requirement_enabled", False)
+    default_permission = settings.get("default_repository_permission", "none")
+    members_can_create = settings.get("members_can_create_repositories", False)
+    
     # Check 2FA requirement
-    if settings.get("two_factor_requirement_enabled"):
+    if two_factor_enabled:
         print("✓ Two-factor authentication is REQUIRED")
     else:
         print("✗ WARNING: Two-factor authentication is NOT required")
     
     # Check default repository permission
-    default_perm = settings.get("default_repository_permission", "none")
-    print(f"\nDefault repository permission: {default_perm}")
-    if default_perm in ["read", "none"]:
+    print("\nDefault repository permission:", default_permission)
+    if default_permission in ["read", "none"]:
         print("✓ Default permission is restrictive")
     else:
         print("✗ WARNING: Default permission may be too permissive")
     
     # Check member repository creation
-    can_create = settings.get("members_can_create_repositories", False)
-    print(f"\nMembers can create repositories: {can_create}")
-    if not can_create:
+    print("\nMembers can create repositories:", str(members_can_create))
+    if not members_can_create:
         print("✓ Repository creation is controlled")
     else:
         print("⚠ Members can create repositories")

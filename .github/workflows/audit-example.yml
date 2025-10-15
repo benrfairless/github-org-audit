@@ -1,0 +1,74 @@
+name: Organization Audit Example
+
+# This is an example workflow showing how to use the GitHub Organization Audit tool
+# in GitHub Actions for automated compliance monitoring.
+#
+# To use this workflow:
+# 1. Copy this file to your repository's .github/workflows/ directory
+# 2. Create a GitHub token with 'read:org' and 'repo' scopes
+# 3. Add the token as a repository secret named 'ORG_AUDIT_TOKEN'
+# 4. Update the 'organization' variable below with your org name
+# 5. Adjust the schedule as needed
+
+on:
+  # Run on a schedule (example: weekly on Monday at 9 AM UTC)
+  schedule:
+    - cron: '0 9 * * 1'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: 'Organization to audit (optional, overrides default)'
+        required: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -e .
+      
+      - name: Run organization audit
+        env:
+          GITHUB_TOKEN: ${{ secrets.ORG_AUDIT_TOKEN }}
+        run: |
+          # Set organization name (use input if provided, otherwise use default)
+          ORG_NAME="${{ github.event.inputs.organization }}"
+          if [ -z "$ORG_NAME" ]; then
+            ORG_NAME="your-org-name"  # Change this to your default organization
+          fi
+          
+          # Run audit and save to JSON
+          github-org-audit audit "$ORG_NAME" \
+            --output json \
+            --output-file "audit-results.json"
+      
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-results
+          path: audit-results.json
+          retention-days: 90
+      
+      # Optional: Create an issue if certain conditions are met
+      # - name: Check for security issues
+      #   run: |
+      #     # Example: Check if 2FA is not enabled
+      #     if ! jq -e '.settings.two_factor_requirement_enabled == true' audit-results.json; then
+      #       echo "::warning::Two-factor authentication is not required!"
+      #     fi

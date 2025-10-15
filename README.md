@@ -194,7 +194,26 @@ github-org-audit codeowners my-organization
 github-org-audit audit my-organization --no-archived
 ```
 
+## Automation with GitHub Actions
+
+You can automate organization audits using GitHub Actions. An example workflow is provided in `.github/workflows/audit-example.yml`.
+
+To set up automated audits:
+
+1. Copy the example workflow to your repository
+2. Create a GitHub token with `read:org` and `repo` scopes
+3. Add it as a repository secret named `ORG_AUDIT_TOKEN`
+4. Update the organization name in the workflow
+5. Adjust the schedule as needed
+
+The workflow will:
+- Run audits on a schedule (e.g., weekly)
+- Save results as artifacts
+- Allow manual triggering
+
 ## Development
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed development guidelines.
 
 ### Running Tests
 
